@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <unistd.h>
+#include <fstream>
+#include <map>
 
-//podem proteger a variavel com .env
-const std::string BOT_TOKEN = "8596323290:AAFN8JHW3BGTUbH7WnZKYIKuP_0jpkBzx48";
+std::string BOT_TOKEN;
 
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     ((std::string*)userp)->append((char*)contents, size * nmemb);
@@ -27,6 +28,20 @@ std::string fazerRequisicao(const std::string& url) {
         curl_easy_cleanup(curl);
     }
     return readBuffer;
+}
+
+//Função para ler o .env
+std::map<std::string, std::string> carregarEnv(const std::string& caminho = ".env") {
+    std::map<std::string, std::string> env;
+    std::ifstream arquivo(caminho);
+    std::string linha;
+    while (std::getline(arquivo, linha)) {
+        if (linha.empty() || linha[0] == '#') continue;     // ignora vazias e comentários
+        auto pos = linha.find('=');
+        if (pos == std::string::npos) continue;
+        env[linha.substr(0, pos)] = linha.substr(pos + 1);
+    }
+    return env;
 }
 
 // Valida CPF (inclui rejeição de dígitos repetidos)
@@ -92,6 +107,14 @@ bool pareceCPF(const std::string& texto) {
 }
 
 int main() {
+    auto env = carregarEnv();
+    BOT_TOKEN = env["BOT_TOKEN"];
+
+    if (BOT_TOKEN.empty()) {
+        std::cerr << "Erro: BOT_TOKEN não encontrado no .env\n";
+        return 1;
+    }
+
     std::cout << "Bot iniciado. Aguardando mensagens...\n";
     long long last_update_id = 0;
 
