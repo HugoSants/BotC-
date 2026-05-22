@@ -32,14 +32,14 @@ std::string fazerRequisicao(const std::string& url) {
 
 //Função para ler o .env
 std::map<std::string, std::string> carregarEnv(const std::string& caminho = ".env") {
-    std::map<std::string, std::string> env;
+    std::map<std::string, std::string> env; // Cria um mapa para armazenar as variáveis
     std::ifstream arquivo(caminho);
     std::string linha;
     while (std::getline(arquivo, linha)) {
         if (linha.empty() || linha[0] == '#') continue;     // ignora vazias e comentários
         auto pos = linha.find('=');
         if (pos == std::string::npos) continue;
-        env[linha.substr(0, pos)] = linha.substr(pos + 1);
+        env[linha.substr(0, pos)] = linha.substr(pos + 1);// Salva chave e valor no mapa
     }
     return env;
 }
