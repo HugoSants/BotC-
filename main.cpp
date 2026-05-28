@@ -57,7 +57,7 @@ std::map<std::string, std::string> carregarEnv(const std::string& caminho = ".en
         if (linha.empty() || linha[0] == '#')
             continue;
 
-        auto pos = Finder = linha.find('=');
+        auto pos  = linha.find('=');
         if (pos == std::string::npos)
             continue;
 
