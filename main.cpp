@@ -15,7 +15,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     return size * nmemb;
 }
 
-// Faz requisição HTTP GET
+// Faz requisição: HTTP GET
 bool fazerRequisicao(const std::string& url, std::string& resposta, std::string& erro) {
     CURL* curl = curl_easy_init();
     if (!curl) {
